@@ -30,12 +30,11 @@ public class Problem1 extends Configured implements Tool {
         private final static IntWritable plus = new IntWritable(1);
         private final static IntWritable minus = new IntWritable(-1);
 
+        private JSONParser parser = JsonParserFactory.getInstance().newJsonParser();
         private Text word = new Text();
 
         public void map(Object key, Text value, Context context)
                 throws IOException, InterruptedException {
-            JsonParserFactory factory = JsonParserFactory.getInstance();
-            JSONParser parser = factory.newJsonParser();
             Map jsonData = parser.parseJson(value.toString());
             ArrayList names = (ArrayList)jsonData.get("root");
 

@@ -18,7 +18,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
                 			<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>by.bsuir.course.bdpa.tasks.SimpleMapReduce</mainClass>
+							<mainClass>by.bsuir.course.bdpa.tasks.SimpleMapReduceRelations</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

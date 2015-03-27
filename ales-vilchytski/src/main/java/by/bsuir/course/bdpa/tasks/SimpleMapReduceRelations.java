@@ -19,7 +19,17 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class SimpleMapReduce {
+
+/*
+ *  Task:
+ *  Given json-like file in format 
+ *    [ "A", "B" ]
+ *    [ "C", "A" ]
+ *    ...
+ *  
+ *  Find out all pairs, which has relations like 'A -> B' or 'B -> A' but not both.
+ */
+public class SimpleMapReduceRelations {
 
 	public static class SimpleMapper extends
 			Mapper<Object, Text, Text, IntWritable> {
@@ -64,7 +74,7 @@ public class SimpleMapReduce {
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		Job job = Job.getInstance(conf, "Simple map reduce relations");
-		job.setJarByClass(SimpleMapReduce.class);
+		job.setJarByClass(SimpleMapReduceRelations.class);
 		job.setMapperClass(SimpleMapper.class);
 		job.setReducerClass(SimpleReducer.class);
 		job.setMapOutputKeyClass(Text.class);

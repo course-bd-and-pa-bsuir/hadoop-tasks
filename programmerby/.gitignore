@@ -1,0 +1,7 @@
+/.gradle
+/.idea
+/hadoop.log*
+/build/
+/results/
+.DS_Store
+/*.iml

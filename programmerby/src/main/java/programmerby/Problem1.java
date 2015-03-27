@@ -1,3 +1,7 @@
+/**
+ * Problem 1: In social networks, the he relationship friend is often symmetric. That implies that if Bob is friend with Amy, Amy is friend with Bob. For this exercise, implement a MapReduce algorithm to determine whether or not this property holds true for the provided sample data. In other words, the MapReduce application has to produce a list of all non-symmetric friend relationships. In other words, find all the friend relationships where (as an example) Bob is friend with Alex, but Alex is not friend with Bob or Mike is friend with Coney, but Coney is not friend with Mike.
+ A JSON file links.json is provided that can be used as the input into the Map function. The output of the Reduce function has to be the list of non-symmetric friend records
+ */
 package programmerby;
 
 import java.io.*;

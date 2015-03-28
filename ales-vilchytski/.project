@@ -21,7 +21,7 @@
 			<arguments>
 				<dictionary>
 					<key>LaunchConfigHandle</key>
-					<value>&lt;project&gt;/.externalToolBuilders/mvn package.launch</value>
+					<value>&lt;project&gt;/.externalToolBuilders/mvn assembly.launch</value>
 				</dictionary>
 			</arguments>
 		</buildCommand>

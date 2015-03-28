@@ -4,20 +4,15 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-import by.bsuir.course.bdpa.Util;
+import by.bsuir.course.bdpa.Main.TaskInfo;
 
 
 /*
@@ -32,6 +27,13 @@ import by.bsuir.course.bdpa.Util;
  */
 public class SimpleMapReduceSqlike {
 
+	public static TaskInfo TASK_INFO = new TaskInfo();
+	static {
+		TASK_INFO.name = "Task 3: simple mapreduce sqlike join";
+		TASK_INFO.mapper = SimpleMapper.class;
+		TASK_INFO.reducer = SimpleReducer.class;
+	}
+	
 	public static class SimpleMapper extends
 			Mapper<Object, Text, Text, Text> {
 		
@@ -78,19 +80,5 @@ public class SimpleMapReduceSqlike {
 			
 		}
 	}
-
-	public static void main(String[] args) throws Exception {
-		Configuration conf = new Configuration();
-		Job job = Job.getInstance(conf, "Task 3: Simple map reduce SQL-like");
-		job.setJarByClass(SimpleMapReduceSqlike.class);
-		job.setMapperClass(SimpleMapper.class);
-		job.setReducerClass(SimpleReducer.class);
-		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(Text.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
-		FileInputFormat.addInputPath(job, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job, new Path(args[1] + "_" + Util.timestamp()));
-		System.exit(job.waitForCompletion(true) ? 0 : 1);
-	}
+	
 }

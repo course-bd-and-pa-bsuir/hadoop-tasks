@@ -34,9 +34,6 @@ import org.apache.hadoop.util.ToolRunner;
 public class Problem2 extends Configured implements Tool {
     public static class Problem2Mapper extends
             Mapper<Object, Text, Text, Text> {
-        private final static IntWritable plus = new IntWritable(1);
-        private final static IntWritable minus = new IntWritable(-1);
-
         private JSONParser parser = JsonParserFactory.getInstance().newJsonParser();
 
         private Text word = new Text();
@@ -72,7 +69,6 @@ public class Problem2 extends Configured implements Tool {
             result.set("[" + StringUtils.join(docs, ", ") + "]");
             context.write(key, result);
         }
-
     }
 
     public int run(String[] args) throws Exception {

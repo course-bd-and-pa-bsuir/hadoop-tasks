@@ -9,7 +9,7 @@
 
 	<properties>
 		<jar.name>mapreduce</jar.name>
-		<main.class>by.bsuir.course.bdpa.tasks.SimpleMapReduceRelations</main.class>
+		<main.class>by.bsuir.course.bdpa.tasks.SimpleMapReduceSqlike</main.class>
 	</properties>
 
 	<build>

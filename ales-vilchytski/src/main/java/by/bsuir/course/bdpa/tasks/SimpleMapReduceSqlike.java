@@ -2,17 +2,14 @@ package by.bsuir.course.bdpa.tasks;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -25,65 +22,73 @@ import by.bsuir.course.bdpa.Util;
 
 /*
  *  Task:
- *  Given json-like file in format 
- *    [ "A", "B" ]
- *    [ "C", "A" ]
- *    ...
+ *  Given SQL-like query with inner join:
+ *  SELECT * FROM A, B WHERE A.id = B.id
  *  
- *  Find out all pairs, which has relations like 'A -> B' or 'B -> A' but not both.
+ *  MapReduce should produce the same output as this query, but using following input:
+ *    ["A", "1", "foo", "bar"]  
+ *    ["B", "1", "baz", "foo"]
+ *    ...
  */
-public class SimpleMapReduceRelations {
+public class SimpleMapReduceSqlike {
 
 	public static class SimpleMapper extends
-			Mapper<Object, Text, Text, IntWritable> {
+			Mapper<Object, Text, Text, Text> {
 		
 		@Override
 		public void map(Object key, Text value, Context context)
 				throws IOException, InterruptedException {
 			JsonReader rdr = Json.createReader(new StringReader(value.toString()));
-			JsonArray link = rdr.readArray();
+			JsonArray row = rdr.readArray();
 			
-			List<String> ls = new LinkedList<String>();
-			ls.add(link.getString(0));
-			ls.add(link.getString(1));
-			Collections.sort(ls);
+			String oid = row.getString(1);
 			
-			String mapkey = ls.get(0) + " - " + ls.get(1);
-			
-			context.write(
-					new Text(mapkey), 
-					new IntWritable(1));
+			context.write(new Text(oid), new Text(row.toString()));
 		}
 		
 	}
 
 	public static class SimpleReducer extends
-			Reducer<Text, IntWritable, Text, IntWritable> {
+			Reducer<Text, Text, Text, Text> {
 		
 		@Override
-		public void reduce(Text key, Iterable<IntWritable> values, Context context)
+		public void reduce(Text key, Iterable<Text> values, Context context)
 				throws IOException, InterruptedException {
+
+			String order = null;
+			List<String> items = new LinkedList<String>();
+			for (Text row : values) {
+				JsonReader rdr = Json.createReader(new StringReader(row.toString()));
+				JsonArray js = rdr.readArray();
+				
+				if (js.getString(0).equals("order")) {
+					order = row.toString();
+				} else { // line_item
+					items.add(row.toString());
+				}
+			}
 			
-			int count = 0;
-			for (IntWritable i : values) {
-				count += i.get();
+			if (order != null) {
+				for (String item : items) {
+					StringBuilder resultRow = new StringBuilder();
+					resultRow.append(order).append(item);
+					context.write(key, new Text(resultRow.toString()));
+				}
 			}
-			if (count == 1) {
-				context.write(key, new IntWritable(0));
-			}
+			
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
-		Job job = Job.getInstance(conf, "Task 1: Simple map reduce relations");
-		job.setJarByClass(SimpleMapReduceRelations.class);
+		Job job = Job.getInstance(conf, "Task 3: Simple map reduce SQL-like");
+		job.setJarByClass(SimpleMapReduceSqlike.class);
 		job.setMapperClass(SimpleMapper.class);
 		job.setReducerClass(SimpleReducer.class);
 		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(IntWritable.class);
+		job.setMapOutputValueClass(Text.class);
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(IntWritable.class);
+		job.setOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1] + "_" + Util.timestamp()));
 		System.exit(job.waitForCompletion(true) ? 0 : 1);

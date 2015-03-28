@@ -75,8 +75,8 @@ public class Problem2 extends Configured implements Tool {
         Configuration conf = getConf();
 
         args = new GenericOptionsParser(conf, args).getRemainingArgs();
-        if (!(args.length != 2 || args.length != 4)) {
-            System.err.println("Usage: <in> <out>");
+        if (args.length != 2) {
+            System.err.println("Usage: <input_path> <output_path_noexist>");
             System.exit(2);
         }
 

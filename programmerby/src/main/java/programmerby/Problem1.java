@@ -48,7 +48,7 @@ public class Problem1 extends Configured implements Tool {
 
     public static class Problem1Reducer extends
             Reducer<Text, IntWritable, Text, Text> {
-        private IntWritable result = new IntWritable();
+        private final static Text result = new Text("non-symmetric");
 
         public void reduce(Text key, Iterable<IntWritable> values,
                            Context context) throws IOException, InterruptedException {
@@ -58,19 +58,17 @@ public class Problem1 extends Configured implements Tool {
             }
 
             if (sum > 0) {
-                result.set(sum);
-                context.write(key, new Text("non-symmetric"));
+                context.write(key, result);
             }
         }
-
     }
 
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
 
         args = new GenericOptionsParser(conf, args).getRemainingArgs();
-        if (!(args.length != 2 || args.length != 4)) {
-            System.err.println("Usage: <in> <out>");
+        if (args.length != 2) {
+            System.err.println("Usage: <input_path> <output_path_noexist>");
             System.exit(2);
         }
 

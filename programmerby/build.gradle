@@ -61,6 +61,8 @@ jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
+// Example:
+// gradle runSpark -PsparkMain="programmerby.SparkPi" -PsparkArgs="local 100"
 task runSpark(dependsOn: 'jar', type: JavaExec) {
     classpath = files(jar.archivePath, configurations.provided)
     maxHeapSize = '1024m'

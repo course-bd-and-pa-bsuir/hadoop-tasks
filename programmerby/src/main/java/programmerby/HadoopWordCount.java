@@ -18,7 +18,7 @@ import org.apache.hadoop.util.ToolRunner;
 /**
  * @link https://github.com/learninghadoop2/book-examples
  */
-public class WordCount extends Configured implements Tool {
+public class HadoopWordCount extends Configured implements Tool {
     public static class WordCountMapper extends
             Mapper<Object, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
@@ -62,7 +62,7 @@ public class WordCount extends Configured implements Tool {
 
         Job job = Job.getInstance(conf);
 
-        job.setJarByClass(WordCount.class);
+        job.setJarByClass(HadoopWordCount.class);
         job.setMapperClass(WordCountMapper.class);
         job.setReducerClass(WordCountReducer.class);
         job.setOutputKeyClass(Text.class);
@@ -75,7 +75,7 @@ public class WordCount extends Configured implements Tool {
     }
 
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new WordCount(), args);
+        int exitCode = ToolRunner.run(new HadoopWordCount(), args);
         System.exit(exitCode);
     }
 }

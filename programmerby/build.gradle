@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'scala'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
@@ -40,25 +41,36 @@ eclipse {
 }
 
 dependencies {
-    provided 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.3.3'
+    // Spark тянет за собой свою версию Hadoop
+    //provided 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.3.3'
+
+    provided 'org.apache.spark:spark-core_2.10:1.3.0'
+    provided 'org.apache.spark:spark-mllib_2.10:1.3.0'
+    provided 'org.apache.spark:spark-streaming_2.10:1.3.0'
+    provided 'org.apache.spark:spark-streaming-twitter_2.10:1.3.0'
+    provided 'org.scala-lang:scala-library:2.10.4'
 
     compile 'com.codesnippets4all:quick-json:1.0.4'
 
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
-// Hadoop использует версию guava 11.0.2, но какая-то зависимость ставит версию 16.0.
-// Принудительно сделаем 11.0.2
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'com.google.guava') {
-            details.useVersion '11.0.2'
-        }
-    }
-}
-
 // Emulate Maven shade plugin with a fat jar.
 // http://docs.codehaus.org/display/GRADLE/Cookbook#Cookbook-Creatingafatjar
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+task runSpark(dependsOn: 'jar', type: JavaExec) {
+    classpath = files(jar.archivePath, configurations.provided)
+    maxHeapSize = '1024m'
+
+    // Set main class
+    if (project.hasProperty('sparkMain')) {
+        main = sparkMain
+    }
+    // Set args
+    if (project.hasProperty('sparkArgs')) {
+        args(sparkArgs.split(' '))
+    }
 }

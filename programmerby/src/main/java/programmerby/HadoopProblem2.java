@@ -13,14 +13,10 @@ import java.util.TreeSet;
 
 import com.codesnippets4all.json.parsers.JSONParser;
 import com.codesnippets4all.json.parsers.JsonParserFactory;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.ArrayWritable;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -31,7 +27,7 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class Problem2 extends Configured implements Tool {
+public class HadoopProblem2 extends Configured implements Tool {
     public static class Problem2Mapper extends
             Mapper<Object, Text, Text, Text> {
         private JSONParser parser = JsonParserFactory.getInstance().newJsonParser();
@@ -82,7 +78,7 @@ public class Problem2 extends Configured implements Tool {
 
         Job job = Job.getInstance(conf);
 
-        job.setJarByClass(Problem2.class);
+        job.setJarByClass(HadoopProblem2.class);
         job.setMapperClass(Problem2Mapper.class);
         job.setReducerClass(Problem2Reducer.class);
         job.setOutputKeyClass(Text.class);
@@ -95,7 +91,7 @@ public class Problem2 extends Configured implements Tool {
     }
 
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new Problem2(), args);
+        int exitCode = ToolRunner.run(new HadoopProblem2(), args);
         System.exit(exitCode);
     }
 }

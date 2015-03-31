@@ -24,7 +24,7 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class Problem1 extends Configured implements Tool {
+public class HadoopProblem1 extends Configured implements Tool {
     public static class Problem1Mapper extends
             Mapper<Object, Text, Text, IntWritable> {
         private final static IntWritable plus = new IntWritable(1);
@@ -74,7 +74,7 @@ public class Problem1 extends Configured implements Tool {
 
         Job job = Job.getInstance(conf);
 
-        job.setJarByClass(Problem1.class);
+        job.setJarByClass(HadoopProblem1.class);
         job.setMapperClass(Problem1Mapper.class);
         job.setReducerClass(Problem1Reducer.class);
         job.setOutputKeyClass(Text.class);
@@ -87,7 +87,7 @@ public class Problem1 extends Configured implements Tool {
     }
 
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new Problem1(), args);
+        int exitCode = ToolRunner.run(new HadoopProblem1(), args);
         System.exit(exitCode);
     }
 }

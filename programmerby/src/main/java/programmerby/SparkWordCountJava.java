@@ -14,17 +14,17 @@ import java.util.List;
 
 public class SparkWordCountJava {
     public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            System.err.println("Usage: <master> <input> [<output>]");
+        if (args.length < 1) {
+            System.err.println("Usage: <input> [<output>]");
             System.exit(1);
         }
 
-        SparkConf conf = new SparkConf()
-                .setMaster(args[0])
+        SparkConf conf = new SparkConf();
+        conf.setMaster(conf.get("spark.master", "local"))
                 .setAppName(SparkWordCountJava.class.getSimpleName());
         JavaSparkContext spark = new JavaSparkContext(conf);
 
-        JavaRDD<String> input = spark.textFile(args[1], 1);
+        JavaRDD<String> input = spark.textFile(args[0], 1);
         JavaRDD<String> words = input.flatMap(new FlatMapFunction<String, String>() {
             @Override
             public Iterable<String> call(String s) {
@@ -46,8 +46,8 @@ public class SparkWordCountJava {
             }
         });
 
-        if (args.length > 2) {
-            counts.saveAsTextFile(args[2]);
+        if (args.length > 1) {
+            counts.saveAsTextFile(args[1]);
         } else {
             List<Tuple2<String, Integer>> output = counts.collect();
             for (Tuple2<?,?> tuple : output) {

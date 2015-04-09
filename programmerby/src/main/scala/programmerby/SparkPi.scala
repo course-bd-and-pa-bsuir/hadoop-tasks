@@ -13,18 +13,13 @@ import org.apache.spark.rdd.RDD
  */
 object SparkPi {
   def main(args: Array[String]) {
-    if (args.length == 0) {
-      System.err.println("Usage: <master> [<slices>]")
-      System.exit(1)
-    }
-
     // Process Args
     val conf = new SparkConf()
-      .setMaster(args(0))
+    conf.setMaster(conf.get("spark.master", "local"))
       .setAppName(this.getClass.getSimpleName)
 
     val spark = new SparkContext(conf)
-    val slices = if (args.length > 1) args(1).toInt else 2
+    val slices = if (args.length > 0) args(0).toInt else 2
     val n = 100000 * slices
 
     // Run spark job

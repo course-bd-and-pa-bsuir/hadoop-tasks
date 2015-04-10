@@ -22,10 +22,12 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.FlatMapFunction;
+import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFunction;
 
 import by.bsuir.course.bdpa.Main.TaskInfo;
+import by.bsuir.course.bdpa.Util;
 
 import java.io.StringReader;
 import java.util.Arrays;
@@ -38,6 +40,15 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
 
+/*
+ *  Task:
+ *  Given json-like file in format 
+ *    [ "A", "B" ]
+ *    [ "C", "A" ]
+ *    ...
+ *  
+ *  Find out all pairs, which has relations like 'A -> B' or 'B -> A' but not both.
+ */
 public class SimpleSparkRelations implements SparkTask {
 	
 	public static TaskInfo TASK_INFO = new TaskInfo();
@@ -50,8 +61,8 @@ public class SimpleSparkRelations implements SparkTask {
 	private static final Pattern SPACE = Pattern.compile(" ");
 
 	public void doWork(JavaSparkContext ctx, String[] args) {
-		if (args.length < 1) {
-			System.err.println("Usage: spark-relations <file>");
+		if (args.length < 2) {
+			System.err.println("Usage: spark-relations <file> <out>");
 			System.exit(1);
 		}
 
@@ -89,11 +100,14 @@ public class SimpleSparkRelations implements SparkTask {
 						return i1 + i2;
 					}
 				});
+		
+		JavaPairRDD<String, Integer> filtered = counts.filter(new Function<Tuple2<String, Integer>, Boolean>() {
+			public Boolean call(Tuple2<String, Integer> row) throws Exception {
+				return row._2().intValue() < 2;
+			}
+		});
 
-		List<Tuple2<String, Integer>> output = counts.collect();
-		for (Tuple2<?, ?> tuple : output) {
-			System.out.println(tuple._1() + ": " + tuple._2());
-		}
+		filtered.saveAsTextFile(args[1] + "_" + Util.timestamp());
 	}
 	
 }

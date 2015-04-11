@@ -10,12 +10,12 @@ else
 	START_OPTS=""
 fi
 
-if [[ "$1" =~ ^hadoop\- ]]; then
+if [[ "$1" == hadoop-* ]]; then
 	echo "Starting hadoop task"
 	
 	HADOOP_OPTS="$START_OPTS" hadoop jar $DIR/../target/mapreduce-jar-with-dependencies.jar "$@"
 
-elif [[ "$1" =~ ^spark\- ]]; then
+elif [[ "$1" == spark-* ]]; then
 	echo "Starting spark task"
 	
 	# Note --jars arguments - for spark 1.3.0 extra non-existing jar is needed due to some strange magic...

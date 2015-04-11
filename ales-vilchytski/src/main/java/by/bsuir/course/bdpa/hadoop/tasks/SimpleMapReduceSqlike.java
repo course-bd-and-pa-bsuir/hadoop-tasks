@@ -1,4 +1,4 @@
-package by.bsuir.course.bdpa.tasks;
+package by.bsuir.course.bdpa.hadoop.tasks;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -12,7 +12,8 @@ import javax.json.JsonReader;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import by.bsuir.course.bdpa.Main.TaskInfo;
+
+import by.bsuir.course.bdpa.HadoopTasksRunner.TaskInfo;
 
 
 /*

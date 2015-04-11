@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package by.bsuir.course.bdpa;
+package by.bsuir.course.bdpa.examples;
 
 import scala.Tuple2;
 
@@ -71,5 +71,7 @@ public class WordCountSpark {
 			System.out.println(tuple._1() + ": " + tuple._2());
 		}
 		ctx.stop();
+		
+		System.exit(1);
 	}
 }
